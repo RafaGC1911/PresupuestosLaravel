@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('lineas_presupuestos', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->foreignId('presupuesto_id');
-            $table->foreignId('producto_id');
+            $table->foreignId('presupuesto_id')->constrained()->cascadeOnDelete();//Me aseguro que si borro un presupuesto o un producto, las líneas se borran también.
+            $table->foreignId('producto_id')->constrained()->cascadeOnDelete();
             $table->float('precio');
             $table->integer('cantidad');
             

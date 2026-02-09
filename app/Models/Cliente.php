@@ -18,4 +18,12 @@ class Cliente extends Model
     {
         return $this->hasMany(Presupuesto::class); 
     }
+
+    //Fillables
+     protected $fillable = [
+        'nombre',
+        'email',
+        'telefono',
+        'direccion'
+    ];
 }
