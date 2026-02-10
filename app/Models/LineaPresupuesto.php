@@ -13,13 +13,22 @@ class LineaPresupuesto extends Model
     use HasFactory;
 
     //Fillable
-     protected $fillable = [
+    protected $fillable = [
         'presupuesto_id',
         'producto_id',
         'precio',
         'cantidad'
     ];
 
+    //Casts
+
+    protected function casts(): array
+    {
+        return [
+            'precio' => 'float',
+            'cantidad' => 'integer'
+        ];
+    }
 
     /**
      * Relación con productos
@@ -39,6 +48,4 @@ class LineaPresupuesto extends Model
     {
         return $this->belongsTo(Presupuesto::class);
     }
-
-
 }

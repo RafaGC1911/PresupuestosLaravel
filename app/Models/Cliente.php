@@ -26,4 +26,6 @@ class Cliente extends Model
         'telefono',
         'direccion'
     ];
+
+    
 }
