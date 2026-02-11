@@ -17,7 +17,9 @@ class LineasPresupuestoFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'precio' =>fake()->randomFloat(2,200,3000),
+            'cantidad' =>fake()->numberBetween(1,100),
+            //TODO INCLUIR PRESUPUESTO_ID Y PRODUCTO_ID
         ];
     }
 }

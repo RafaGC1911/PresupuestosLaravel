@@ -17,7 +17,10 @@ class PresupuestoFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'fecha'=>fake()->dateTime(),
+            'total' =>fake()->randomFloat(2,200,4000),
+            'estado' =>fake()->word(),
+            //TODO INCLUIR CLIENTE Y USER ID
         ];
     }
 }
