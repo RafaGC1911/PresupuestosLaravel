@@ -2,8 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\LineaPresupuesto;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+
 
 class LineasPresupuestoSeeder extends Seeder
 {
@@ -12,6 +14,6 @@ class LineasPresupuestoSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        LineaPresupuesto::factory(10)->create();
     }
 }
