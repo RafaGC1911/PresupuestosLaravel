@@ -17,10 +17,16 @@ class PresupuestoFactory extends Factory
     public function definition(): array
     {
         return [
-            'fecha'=>fake()->dateTime(),
-            'total' =>fake()->randomFloat(2,200,4000),
-            'estado' =>fake()->word(),
-            //TODO INCLUIR CLIENTE Y USER ID
+            'fecha' => fake()->dateTime(),
+            'total' => fake()->randomFloat(2, 200, 4000),
+            //Inserta un dato random entre estos 3 posibilidades
+            'estado' => fake()->randomElement([
+                'pendiente',
+                'aceptado',
+                'rechazado'
+            ]),
+            'cliente_id' => \App\Models\Cliente::factory(),
+            'user_id' => \App\Models\User::factory(),
         ];
     }
 }
