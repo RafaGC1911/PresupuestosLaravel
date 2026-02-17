@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('lineas_presupuestos', function (Blueprint $table) {
+        Schema::create('linea_presupuestos', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->foreignId('presupuesto_id')->constrained()->cascadeOnDelete();//Me aseguro que si borro un presupuesto o un producto, las líneas se borran también.
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('lineas_presupuestos');
+        Schema::dropIfExists('linea_presupuestos');
     }
 };
