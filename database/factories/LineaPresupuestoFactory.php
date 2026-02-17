@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Lineas_presupuesto>
  */
-class LineasPresupuestoFactory extends Factory
+class LineaPresupuestoFactory extends Factory
 {
     /**
      * Define the model's default state.

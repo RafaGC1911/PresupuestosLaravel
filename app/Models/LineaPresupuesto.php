@@ -12,6 +12,8 @@ class LineaPresupuesto extends Model
     /** @use HasFactory<\Database\Factories\LineasPresupuestoFactory> */
     use HasFactory;
 
+    
+
     //Fillable
     protected $fillable = [
         'presupuesto_id',
