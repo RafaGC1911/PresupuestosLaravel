@@ -65,3 +65,12 @@ class User extends Authenticatable
         return $this->hasMany(Presupuesto::class);
     }
 }
+
+/**
+ * Funciones para verficar si el usuario es admin o comercial.
+ * Se usarán luego en DashboardController
+ */
+
+// public function isAdmin(){
+
+// }
