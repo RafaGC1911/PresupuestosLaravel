@@ -14,6 +14,15 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     /**
+     * Constantes
+     * 
+     */
+
+    const ROL_ADMIN = 'admin';
+    const ROL_COMERCIAL = 'comercial';
+
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var list<string>
