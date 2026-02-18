@@ -16,14 +16,14 @@ class UserSeeder extends Seeder
     {
       //Usuario admin con nombre Admin y contraseña admin
        User::create([
-        'nombre' => 'admin',
+        'name' => 'admin',
         'email' => 'admin@empresa.com',
         'password' => 'admin',
         'rol' => User::ROL_ADMIN
        ]);
 
        User::create([
-        'nombre' => 'comercial',
+        'name' => 'comercial',
         'email' => 'comercial@empresa.com',
         'password' => 'comercial',
         'rol' => User::ROL_COMERCIAL

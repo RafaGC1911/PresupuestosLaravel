@@ -19,21 +19,14 @@ class DatabaseSeeder extends Seeder
     {
 
     //Crea un usuario con rol admin para desde este dar de alta luego a los demás usuarios
-        User::factory()->create([
-
-            'name' => 'admin',
-            'email' => 'admin@proyecto.com',
-            //Por defecto crea admin y contraseña admin
-            'rol' => 'admin',
-            'password' => Hash::make('admin')
-        ]);
-
         //Ahora llama a los seeders creados:
         $this->call([
         ClienteSeeder::class, //Crea clientes 
         ProductoSeeder::class, //Crea productos
+        UserSeeder::class//Crea los usuarios de mi elección
         //PresupuestoSeeder::class, //Crea presupuestos
         //LineasPresupuestoSeeder::class, // Crea líneas de presupuesto
+        
     ]);
         
     }
