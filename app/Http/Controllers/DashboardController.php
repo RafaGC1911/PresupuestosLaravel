@@ -24,6 +24,7 @@ class DashboardController extends Controller
         }
 
 
+        //Si no tiene rol válido, cierra la sesión y redirige al login
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();

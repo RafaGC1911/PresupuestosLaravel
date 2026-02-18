@@ -32,8 +32,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
         ClienteSeeder::class, //Crea clientes 
         ProductoSeeder::class, //Crea productos
-        PresupuestoSeeder::class, //Crea presupuestos
-        LineasPresupuestoSeeder::class, // Crea líneas de presupuesto
+        //PresupuestoSeeder::class, //Crea presupuestos
+        //LineasPresupuestoSeeder::class, // Crea líneas de presupuesto
     ]);
         
     }
