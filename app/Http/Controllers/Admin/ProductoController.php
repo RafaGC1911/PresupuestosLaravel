@@ -13,7 +13,12 @@ class ProductoController extends Controller
      */
     public function index()
     {
-        //
+        // Traemos todos los productos de la base de datos
+
+        $productos = Producto::all();
+        
+        // y los pasamos a la vista
+        return view('admin.productos.index', compact('productos'));
     }
 
     /**

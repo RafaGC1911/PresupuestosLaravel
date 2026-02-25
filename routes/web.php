@@ -13,7 +13,7 @@ use App\Http\Controllers\Admin\ProductoController as AdminProductoController;
  * llámalo AdminProductoController para usarlo en este archivo".
  */
 
-
+//Aquí en web.php se definen las rutas, se definen qué URL ejecuta qué controlador
 
 Route::get('/', function () {
     //Apuntar directamente a auth.login para que al iniciar la app no se vaya a la página de publicidad de laravel
@@ -35,6 +35,7 @@ Route::middleware('auth')->group(function () {
 });
 
 // Rutas del panel de administración
+//
 // Solo accesibles si estás logueado, verificado y tienes rol admin
 Route::middleware(['auth', 'verified', 'rol:admin'])
     ->prefix('admin')        // prefix es un método para que en la url salga admin
