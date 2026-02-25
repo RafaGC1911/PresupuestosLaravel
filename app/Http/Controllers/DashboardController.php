@@ -16,11 +16,13 @@ class DashboardController extends Controller
         $user = $request->user();
 
         if ($user->isAdmin()) {
+
             return view('admin.dashboard');//TODO Cambiar por llamada al controlador
         }
 
         if ($user->isComercial()) {
             return view('comercial.dashboard');//TODO Cambiar por llamada al controlador
+
         }
 
 
