@@ -19,6 +19,8 @@ class ProductoController extends Controller
         
         // y los pasamos a la vista
         return view('admin.productos.index', compact('productos'));
+        //Laravel separa directorios con puntos, esto es como admin/productos/index
+        //Compact es un método que crea un array asociativo ['producto' => $producto] 
     }
 
     /**
@@ -42,7 +44,9 @@ class ProductoController extends Controller
      */
     public function show(Producto $producto)
     {
-        //
+    // Laravel ya me trae el producto automáticamente
+    // Solo tengo que pasárselo a la vista
+        return view('admin.productos.show', compact('producto'));
     }
 
     /**
