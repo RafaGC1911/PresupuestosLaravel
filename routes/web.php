@@ -13,6 +13,8 @@ use App\Http\Controllers\Admin\ProductoController as AdminProductoController;
  * llámalo AdminProductoController para usarlo en este archivo".
  */
 
+use App\Http\Controllers\Admin\UserController as AdminUserController;
+
 //Aquí en web.php se definen las rutas, se definen qué URL ejecuta qué controlador
 
 Route::get('/', function () {
@@ -41,7 +43,10 @@ Route::middleware(['auth', 'verified', 'rol:admin'])
     ->prefix('admin')        // prefix es un método para que en la url salga admin
     ->name('admin.')         // con ->name los nombres de ruta empezarán por admin
     ->group(function () {
+        //  Route::resource es simplemente un atajo para no tener que escribir las 7 rutas básicas a mano.
+        // Y como estamos dentro del grupo con prefix('admin') y name('admin.'), Laravel añade automáticamente el prefijo y el nombre a todas ellas.
         Route::resource('productos', AdminProductoController::class);
+        Route::resource('users', AdminUserController::class);//Esta línea le dice a Laravel que cree automáticamente las 7 rutas estándar para el recurso users, todas apuntando al AdminUserController
     });
 
 
