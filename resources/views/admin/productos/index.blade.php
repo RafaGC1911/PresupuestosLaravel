@@ -36,6 +36,18 @@
                                             class="text-blue-600 hover:underline">Ver</a>
                                         <a href="{{ route('admin.productos.edit', $producto) }}"
                                             class="text-yellow-600 hover:underline">Editar</a>
+
+                                        {{-- El borrado necesita un formulario porque tiene que enviar una petición DELETE --}}
+                                        {{-- No se puede hacer con un simple enlace <a> --}}
+                                        <form action="{{ route('admin.productos.destroy', $producto) }}" method="POST"
+                                            onsubmit="return confirm('¿Seguro que quieres eliminar este producto?')">{{--Esto lanza un alert--}}
+                                            @csrf
+                                            {{-- Le decimos a Laravel que es una petición DELETE --}}
+                                            @method('DELETE')
+                                            <button type="submit" class="text-red-600 hover:underline">
+                                                Eliminar
+                                            </button>
+                                        </form>
                                     </div>
                                 </td>
                             </tr>

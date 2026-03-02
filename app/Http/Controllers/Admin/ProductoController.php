@@ -127,6 +127,11 @@ class ProductoController extends Controller
      */
     public function destroy(Producto $producto)
     {
-        //
+    // Borramos el producto de la base de datos
+    $producto->delete();
+
+    // Redirigimos al listado con mensaje de confirmación
+    return redirect()->route('admin.productos.index')
+        ->with('success', 'Producto eliminado correctamente');
     }
 }
