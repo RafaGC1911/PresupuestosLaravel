@@ -51,7 +51,7 @@ class ProductoController extends Controller
         en este caso cuando rellena el formulario y le da a "Guardar".
         Es una caja que contiene todo lo que el usuario ha enviado. 
         Por ejemplo cuando rellenas el formulario de crear producto y le das a guardar*/
-
+        //validate comprueba que todo lo que ha llegado del usuario al request cumpla estas reglas:
         $request->validate([
             // 'tipo' es obligatorio y tiene que ser texto
             'tipo' => 'required|string|max:255', //tipo contiene lo que el usuario escribió en el campo "tipo" del formulario
