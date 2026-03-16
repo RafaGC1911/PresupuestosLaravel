@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\ProductoController as AdminProductoController;
  */
 
 use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Comercial\PresupuestoController as ComercialPresupuestoController;
 
 //Aquí en web.php se definen las rutas, se definen qué URL ejecuta qué controlador
 
@@ -49,6 +50,14 @@ Route::middleware(['auth', 'verified', 'rol:admin'])
         Route::resource('users', AdminUserController::class);//Esta línea le dice a Laravel que cree automáticamente las 7 rutas estándar para el recurso users, todas apuntando al AdminUserController
     });
 
+// Rutas del área comercial
+// Solo accesibles si estás logueado, verificado y tienes rol comercial
+Route::middleware(['auth', 'verified', 'rol:comercial'])
+    ->prefix('comercial')
+    ->name('comercial.')
+    ->group(function () {
+        Route::resource('presupuestos', ComercialPresupuestoController::class);
+    });
 
 
 require __DIR__.'/auth.php';
