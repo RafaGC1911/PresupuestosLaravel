@@ -33,11 +33,13 @@
               </select>
             </div>
 
-            {{-- Fecha --}}
+            {{-- Fecha por defecto la de hoy --}}
             <div class="mb-4">
               <label class="block text-gray-600 font-semibold mb-1">Fecha</label>
-              <input type="date" name="fecha" value="{{ old('fecha') }}"
+              <input type="date" name="fecha"
+                value="{{ old('fecha', now()->format('Y-m-d')) }}"
                 class="w-full border border-gray-300 rounded px-4 py-2">
+             
             </div>
 
             {{-- Estado --}}
