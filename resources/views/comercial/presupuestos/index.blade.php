@@ -12,11 +12,17 @@
 
                     {{-- Mensaje de éxito si existe --}}
                     @if(session('exito'))
-                        <div class="bg-green-100 text-green-800 px-4 py-3 rounded mb-4">
-                            {{ session('exito') }}
-                        </div>
+                    <div class="bg-green-100 text-green-800 px-4 py-3 rounded mb-4">
+                        {{ session('exito') }}
+                    </div>
                     @endif
-
+                    {{-- Botón para volver al panel principal --}}
+                    <div class="mb-6">
+                        <a href="{{ route('dashboard') }}"
+                            class="text-gray-500 hover:underline text-sm">
+                            ← Volver al panel principal
+                        </a>
+                    </div>
                     {{-- Botón crear presupuesto --}}
                     <div class="mb-4">
                         <a href="{{ route('comercial.presupuestos.create') }}"

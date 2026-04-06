@@ -1,4 +1,5 @@
 <x-app-layout>
+
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             Crear producto
@@ -24,7 +25,7 @@
                                 class="w-full border border-gray-300 rounded px-4 py-2">
                             {{-- Muestra el error de validación si lo hay --}}
                             @error('tipo')
-                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                             @enderror
                         </div>
 
@@ -34,7 +35,7 @@
                             <input type="number" step="0.01" name="precio_base" value="{{ old('precio_base') }}"
                                 class="w-full border border-gray-300 rounded px-4 py-2">
                             @error('precio_base')
-                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                             @enderror
                         </div>
 
