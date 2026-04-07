@@ -28,7 +28,10 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        // En lugar de usar intended() que guarda la URL anterior,
+        // mandamos siempre al dashboard que ya se encarga de redirigir
+        // según el rol del usuario que acaba de loguearse
+        return redirect()->route('dashboard');
     }
 
     /**

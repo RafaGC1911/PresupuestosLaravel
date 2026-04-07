@@ -11,26 +11,40 @@ use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public function index(Request $request): View|RedirectResponse
     {
         $user = $request->user();
 
         if ($user->isAdmin()) {
 
-            return view('admin.dashboard');//TODO Cambiar por llamada al controlador
+            return view('admin.dashboard'); //TODO Cambiar por llamada al controlador
         }
 
         if ($user->isComercial()) {
-            return view('comercial.dashboard');//TODO Cambiar por llamada al controlador
+            return view('comercial.dashboard'); //TODO Cambiar por llamada al controlador
 
         }
 
 
-        //Si no tiene rol válido, cierra la sesión y redirige al login
+        //     Si no tiene rol válido, cierra la sesión y redirige al login
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        
+
         return redirect()->route('login')->with('error', 'Rol de usuario no válido');
     }
 }

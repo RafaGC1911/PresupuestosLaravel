@@ -31,6 +31,39 @@
                         </a>
                     </div>
 
+                    {{-- Formulario de búsqueda --}}
+                    {{-- method GET para que los filtros aparezcan en la URL y se puedan compartir --}}
+                    <form method="GET" action="{{ route('comercial.presupuestos.index') }}"
+                        class="mb-6 flex gap-4">
+
+                        {{-- Buscador por nombre de cliente --}}
+                        <input type="text" name="cliente"
+                            placeholder="Buscar por cliente..."
+                            value="{{ request('cliente') }}"
+                            class="border border-gray-300 rounded px-4 py-2 w-1/3">
+
+                        {{-- Filtro por estado --}}
+                        <select name="estado" class="border border-gray-300 rounded px-8 py-2">
+                            {{-- Opción vacía para mostrar todos --}}
+                            <option value="">Todos los estados</option>
+                            <option value="pendiente" {{ request('estado') == 'pendiente' ? 'selected' : '' }}>Pendiente</option>
+                            <option value="aceptado" {{ request('estado') == 'aceptado' ? 'selected' : '' }}>Aceptado</option>
+                            <option value="rechazado" {{ request('estado') == 'rechazado' ? 'selected' : '' }}>Rechazado</option>
+                        </select>
+
+                        {{-- Botón buscar --}}
+                        <button type="submit"
+                            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                            Buscar
+                        </button>
+
+                        {{-- Botón para limpiar los filtros --}}
+                        <a href="{{ route('comercial.presupuestos.index') }}"
+                            class="text-gray-500 hover:underline py-2">
+                            Limpiar
+                        </a>
+
+                    </form>
                     <table class="w-full text-left border-collapse table-fixed">
                         <thead>
                             <tr class="border-b border-gray-200">

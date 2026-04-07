@@ -11,21 +11,43 @@ use Illuminate\Support\Facades\Auth;
 
 class PresupuestoController extends Controller
 {
-    public function index()
-    {
-        // Traemos solo los presupuestos del comercial que está logueado ahora mismo.
-        // Auth::id() devuelve el ID del usuario de la sesión actual.
-        // Si no filtráramos por user_id, todos los comerciales verían los presupuestos de los demás.
-        $presupuestos = Presupuesto::where('user_id', Auth::id())
-            // with(['cliente']) significa "cuando traigas los presupuestos,
-            // trae también los datos del cliente asociado a cada uno en la misma consulta".
-            // Sin esto, Laravel haría una consulta extra a la base de datos por cada presupuesto
-            // para obtener el nombre del cliente, y eso sería es muy ineficiente.
-            ->with(['cliente'])
-            ->get();
+   public function index(Request $request)
+{
+    // Empezamos construyendo la consulta base filtrando siempre por el comercial logueado.
+    // Auth::id() devuelve el ID del usuario de la sesión actual.
+    // Si no filtráramos por user_id, todos los comerciales verían los presupuestos de los demás.
+    // Usamos query() en lugar de get() directamente porque queremos añadir filtros opcionales después.
+    $query = Presupuesto::where('user_id', Auth::id())
+        // with(['cliente']) significa "cuando traigas los presupuestos,
+        // trae también los datos del cliente asociado a cada uno en la misma consulta".
+        // Sin esto, Laravel haría una consulta extra a la base de datos por cada presupuesto
+        // para obtener el nombre del cliente, lo cual es muy ineficiente.
+        ->with(['cliente']);
 
-        return view('comercial.presupuestos.index', compact('presupuestos'));
+    // Comprobamos si el usuario ha escrito algo en el buscador de cliente.
+    // $request->filled() devuelve true si el campo existe y no está vacío.
+    if ($request->filled('cliente')) {
+        // whereHas filtra los presupuestos que tengan un cliente que cumpla la condición.
+        // Es decir, busca presupuestos cuyo cliente tenga ese nombre.
+        $query->whereHas('cliente', function($q) use ($request) {
+            // LIKE %texto% busca que el nombre contenga el texto en cualquier posición.
+            // Por ejemplo si buscas "gar" encontrará "García", "Garriga", etc.
+            $q->where('nombre', 'like', '%' . $request->cliente . '%');
+        });
     }
+
+    // Comprobamos si el usuario ha seleccionado un estado en el desplegable.
+    if ($request->filled('estado')) {
+        // Filtramos los presupuestos que tengan exactamente ese estado.
+        $query->where('estado', $request->estado);
+    }
+
+    // Ejecutamos la consulta con todos los filtros aplicados y obtenemos los resultados.
+    // Si no se ha aplicado ningún filtro, devuelve todos los presupuestos del comercial.
+    $presupuestos = $query->get();
+
+    return view('comercial.presupuestos.index', compact('presupuestos'));
+}
 
     public function create()
     {
