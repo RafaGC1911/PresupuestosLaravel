@@ -83,7 +83,21 @@
                                 <td class="py-3 px-6">{{ $presupuesto->cliente->nombre }}</td>
                                 <td class="py-3 px-6">{{ $presupuesto->fecha->format('d/m/Y') }}</td>
                                 <td class="py-3 px-6">{{ number_format($presupuesto->total, 2) }} €</td>
-                                <td class="py-3 px-6">{{ $presupuesto->estado }}</td>
+                                <td class="py-3 px-6">
+                                    @if($presupuesto->estado == 'pendiente')
+                                    <span class="bg-yellow-200 text-yellow-800 px-2 py-1 rounded">
+                                        Pendiente
+                                    </span>
+                                    @elseif($presupuesto->estado == 'aceptado')
+                                    <span class="bg-green-200 text-green-800 px-2 py-1 rounded">
+                                        Aceptado
+                                    </span>
+                                    @elseif($presupuesto->estado == 'rechazado')
+                                    <span class="bg-red-200 text-red-800 px-2 py-1 rounded">
+                                        Rechazado
+                                    </span>
+                                    @endif
+                                </td>
                                 <td class="py-3 px-6">
                                     <div class="flex gap-4">
                                         <a href="{{ route('comercial.presupuestos.show', $presupuesto) }}"
