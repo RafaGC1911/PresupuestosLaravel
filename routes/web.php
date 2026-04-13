@@ -60,4 +60,7 @@ Route::middleware(['auth', 'verified', 'rol:comercial'])
     });
 
 
+//Ruta para conectar la url con la función del presupuestoController para crear pdfs
+Route::get('presupuestos/{presupuesto}/pdf', [ComercialPresupuestoController::class, 'pdf'])
+    ->name('comercial.presupuestos.pdf');
 require __DIR__.'/auth.php';

@@ -68,10 +68,15 @@
                             class="text-yellow-600 hover:underline">
                             Editar
                         </a>
+                        <a href="{{ route('comercial.presupuestos.pdf', $presupuesto) }}"
+                            class="text-purple-600 hover:underline">
+                            Descargar PDF
+                        </a>
                     </div>
 
                 </div>
             </div>
         </div>
     </div>
+
 </x-app-layout>

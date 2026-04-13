@@ -8,6 +8,7 @@ use App\Models\Presupuesto;
 use App\Models\Producto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Barryvdh\DomPDF\Facade\Pdf; //Importar la clase que permite usar la librería para generar pdf
 
 class PresupuestoController extends Controller
 {
@@ -218,4 +219,17 @@ class PresupuestoController extends Controller
         return redirect()->route('comercial.presupuestos.index')
             ->with('exito', 'Presupuesto eliminado correctamente');
     }
+
+    //Método para generar un pdf de un presupuesto
+    public function pdf(Presupuesto $presupuesto)
+{
+    // Cargar relaciones necesarias para tener todos los datos
+    $presupuesto->load(['cliente', 'lineasPresupuestos.producto']);
+
+    // Coge una vista de blade y la convierte en pdf
+    $pdf = Pdf::loadView('comercial.presupuestos.pdf', compact('presupuesto'));
+
+    // Esto fuerza la descarga del archivo
+    return $pdf->download('presupuesto_'.$presupuesto->id.'.pdf');
+}
 }
