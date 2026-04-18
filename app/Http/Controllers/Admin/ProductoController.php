@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Producto;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProductoController extends Controller
 {
@@ -12,23 +13,23 @@ class ProductoController extends Controller
      * Display a listing of the resource.
      */
 
-    //index muestra todos los productos
+    // index muestra todos los productos
     public function index()
     {
         // Traemos todos los productos de la base de datos
-
         $productos = Producto::all();
 
-        // y los pasamos a la vista
+        // Los pasamos a la vista
+        // Laravel separa directorios con puntos, esto es como admin/productos/index
+        // compact() crea un array asociativo ['productos' => $productos]
         return view('admin.productos.index', compact('productos'));
-        //Laravel separa directorios con puntos, esto es como admin/productos/index
-        //Compact es un método que crea un array asociativo ['producto' => $producto] 
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    //create  muestra el formulario vacío. No hace nada con la base de datos.
+
+    // create muestra el formulario vacío. No hace nada con la base de datos.
     public function create()
     {
         // No necesita nada de la base de datos
@@ -40,58 +41,69 @@ class ProductoController extends Controller
      * Store a newly created resource in storage.
      */
 
-    //store recibe los datos del formulario cuando le das a "Guardar", los valida y los guarda en la base de datos.
+    // store recibe los datos del formulario cuando le das a "Guardar", los valida y los guarda en la base de datos.
     public function store(Request $request)
     {
-        // Primero validamos los datos que nos llegan del formulario
+        // Primero validamos los datos que nos llegan del formulario.
         // Si la validación falla, Laravel redirige automáticamente
-        // de vuelta al formulario con los errores
-
-        /* Request es un objeto que representa la petición HTTP que llega al servidor cuando el usuario hace algo — 
-        en este caso cuando rellena el formulario y le da a "Guardar".
-        Es una caja que contiene todo lo que el usuario ha enviado. 
-        Por ejemplo cuando rellenas el formulario de crear producto y le das a guardar*/
-        //validate comprueba que todo lo que ha llegado del usuario al request cumpla estas reglas:
+        // de vuelta al formulario con los errores.
         $request->validate([
             // 'tipo' es obligatorio y tiene que ser texto
-            'tipo' => 'required|string|max:255', //tipo contiene lo que el usuario escribió en el campo "tipo" del formulario
+            'tipo' => 'required|string|max:255',
             // 'precio_base' es obligatorio, tiene que ser un número y mayor que 0
             'precio_base' => 'required|numeric|min:0',
+            // 'imagen' es opcional — nullable significa que puede venir vacía
+            // image significa que tiene que ser una imagen
+            // mimes limita los formatos permitidos
+            // max:2048 limita el tamaño a 2MB (2048 kilobytes)
+            'imagen' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
-        // Si la validación pasa, creamos el producto en la base de datos
-        // con los datos que nos han mandado desde el formulario
+        // Variable donde guardaremos la ruta de la imagen
+        // La inicializamos como null por si no se sube ninguna imagen
+        $rutaImagen = null;
+
+        // Comprobamos si el usuario ha subido una imagen
+        // $request->hasFile() devuelve true si el campo tiene un archivo adjunto
+        if ($request->hasFile('imagen')) {
+            // Guardamos la imagen en storage/app/public/productos/
+            // store() genera automáticamente un nombre único para el archivo
+            // para evitar que dos imágenes con el mismo nombre se sobreescriban
+            // 'public' indica que se guarda en la carpeta pública accesible desde el navegador
+            $rutaImagen = $request->file('imagen')->store('productos', 'public');
+        }
+
+        // Creamos el producto en la base de datos con todos sus datos
         Producto::create([
             'tipo' => $request->tipo,
             'precio_base' => $request->precio_base,
+            // Si no se subió imagen, imagen quedará como null en la base de datos
+            'imagen' => $rutaImagen,
         ]);
 
-        // Redirigimos al listado de productos con un mensaje de éxito
-        /**
-         * En lugar de devolver una vista como hacemos en index o show con return view(...), aquí le decimos a Laravel que haga una redirección — es decir, 
-         * que mande al usuario a otra página automáticamente.
-         *  Esto es lo normal después de guardar datos, para evitar que si el usuario recarga la página se vuelvan a enviar los datos del formulario.
-         */
+        // Redirigimos al listado de productos con un mensaje flash de éxito
+        // El mensaje flash solo existe durante la siguiente petición y luego desaparece
         return redirect()->route('admin.productos.index')
-            ->with('success', 'Producto creado'); //Esto añade un mensaje flash a la sesión. Un mensaje flash es un mensaje temporal que solo existe durante la siguiente petición — es decir, solo se muestra una vez y luego desaparece.
-        //'success' es el nombre que le damos al mensaje, y 'Producto actualizado correctamente' es el texto del mensaje.
+            ->with('success', 'Producto creado correctamente');
     }
 
     /**
      * Display the specified resource.
      */
-    //show muestra un solo producto
+
+    // show muestra un solo producto
     public function show(Producto $producto)
     {
-        // Laravel ya me trae el producto automáticamente
-        // Solo tengo que pasárselo a la vista
+        // Laravel ya nos trae el producto automáticamente gracias al Route Model Binding
+        // Solo tenemos que pasárselo a la vista
         return view('admin.productos.show', compact('producto'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    //Edit muestra el formulario pero con los datos del producto ya rellenados.
+
+    // edit muestra el formulario con los datos del producto ya rellenados
     public function edit(Producto $producto)
     {
         // Laravel ya nos trae el producto gracias al Route Model Binding
@@ -102,19 +114,41 @@ class ProductoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    //	update recibe los datos modificados, los valida y los guarda en la base de datos.
+
+    // update recibe los datos modificados, los valida y los guarda en la base de datos
     public function update(Request $request, Producto $producto)
     {
         // Validamos igual que en store
         $request->validate([
             'tipo' => 'required|string|max:255',
             'precio_base' => 'required|numeric|min:0',
+            // La imagen es opcional al editar — el producto puede mantener la imagen anterior
+            'imagen' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
-        // En lugar de crear uno nuevo, actualizamos el que ya existe
+        // Variable para guardar la ruta de la nueva imagen
+        // Por defecto mantenemos la imagen actual del producto
+        $rutaImagen = $producto->imagen;
+
+        // Comprobamos si el usuario ha subido una imagen nueva
+        if ($request->hasFile('imagen')) {
+            // Si el producto ya tenía una imagen anterior la borramos del almacenamiento
+            // para no dejar archivos huérfanos ocupando espacio
+            if ($producto->imagen) {
+                // Storage::disk('public')->delete() borra el archivo del disco
+                Storage::disk('public')->delete($producto->imagen);
+            }
+
+            // Guardamos la nueva imagen y actualizamos la ruta
+            $rutaImagen = $request->file('imagen')->store('productos', 'public');
+        }
+
+        // Actualizamos el producto con los nuevos datos
         $producto->update([
             'tipo' => $request->tipo,
             'precio_base' => $request->precio_base,
+            // Guardamos la ruta de la imagen — puede ser la nueva o la anterior
+            'imagen' => $rutaImagen,
         ]);
 
         // Redirigimos al listado con mensaje de éxito
@@ -125,13 +159,30 @@ class ProductoController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Producto $producto)
-    {
-    // Borramos el producto de la base de datos
+
+    // destroy borra el producto de la base de datos
+ public function destroy(Producto $producto)
+{
+    // Comprobamos si el producto está siendo usado en alguna línea de presupuesto
+    // lineasPresupuestos() es la relación hasMany que definimos en el modelo Producto
+    // exists() devuelve true si hay al menos una línea que use este producto
+    if ($producto->lineasPresupuestos()->exists()) {
+        // Si está siendo usado no lo borramos y redirigimos con un mensaje de error
+        // No podemos borrarlo porque dejaríamos presupuestos sin coherencia
+        return redirect()->route('admin.productos.index')
+            ->with('error', 'No se puede eliminar el producto porque está siendo usado en uno o más presupuestos');
+    }
+
+    // Si el producto tiene una imagen la borramos del almacenamiento antes de borrar el producto
+    // Así no dejamos archivos huérfanos en el servidor
+    if ($producto->imagen) {
+        Storage::disk('public')->delete($producto->imagen);
+    }
+
+    // Si no está siendo usado en ningún presupuesto lo borramos sin problema
     $producto->delete();
 
-    // Redirigimos al listado con mensaje de confirmación
     return redirect()->route('admin.productos.index')
         ->with('success', 'Producto eliminado correctamente');
-    }
+}
 }

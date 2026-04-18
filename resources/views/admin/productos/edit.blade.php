@@ -10,21 +10,19 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
 
-                    {{-- action apunta al método update, pasándole el producto a editar --}}
-                    <form action="{{ route('admin.productos.update', $producto) }}" method="POST">
+                    {{-- enctype="multipart/form-data" obligatorio para subir archivos --}}
+                    <form action="{{ route('admin.productos.update', $producto) }}" method="POST"
+                        enctype="multipart/form-data">
 
-                        {{-- Seguridad CSRF --}}
                         @csrf
-
-                        {{-- Esto le dice a Laravel que en realidad es una petición PUT --}}
-                        {{-- Los formularios HTML solo soportan GET y POST, así que Laravel usa este truco --}}
+                        {{-- Indicamos que es una petición PUT porque HTML solo soporta GET y POST --}}
                         @method('PUT')
 
-                        {{-- Campo tipo — value ya viene relleno con el dato actual del producto --}}
+                        {{-- Campo tipo --}}
                         <div class="mb-4">
                             <label class="block text-gray-600 font-semibold mb-1">Tipo</label>
-                            {{-- old('tipo', $producto->tipo) — si hay error usa lo que escribió el usuario, --}}
-                            {{-- si no hay error usa el valor actual del producto --}}
+                            {{-- old('tipo', $producto->tipo) usa el valor anterior si hubo error, --}}
+                            {{-- o el valor actual del producto si no hubo error --}}
                             <input type="text" name="tipo" value="{{ old('tipo', $producto->tipo) }}"
                                 class="w-full border border-gray-300 rounded px-4 py-2">
                             @error('tipo')
@@ -35,10 +33,38 @@
                         {{-- Campo precio base --}}
                         <div class="mb-4">
                             <label class="block text-gray-600 font-semibold mb-1">Precio base</label>
-                            <input type="number" step="0.01" name="precio_base" 
+                            <input type="number" step="0.01" name="precio_base"
                                 value="{{ old('precio_base', $producto->precio_base) }}"
                                 class="w-full border border-gray-300 rounded px-4 py-2">
                             @error('precio_base')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        {{-- Campo imagen --}}
+                        <div class="mb-4">
+                            <label class="block text-gray-600 font-semibold mb-1">Imagen</label>
+
+                            {{-- Si el producto ya tiene imagen la mostramos como previsualización --}}
+                            @if($producto->imagen)
+                                <div class="mb-2">
+                                    <p class="text-gray-500 text-sm mb-1">Imagen actual:</p>
+                                    {{-- asset('storage/...') genera la URL correcta a la imagen --}}
+                                    {{-- que está guardada en storage/app/public/ --}}
+                                    <img src="{{ asset('storage/' . $producto->imagen) }}"
+                                        alt="Imagen del producto"
+                                        class="h-32 w-auto rounded border border-gray-200">
+                                </div>
+                            @endif
+
+                            {{-- Input para subir una nueva imagen --}}
+                            {{-- Si se deja vacío se mantiene la imagen actual --}}
+                            <input type="file" name="imagen" accept="image/*"
+                                class="w-full border border-gray-300 rounded px-4 py-2">
+                            <p class="text-gray-400 text-sm mt-1">
+                                Dejar vacío para mantener la imagen actual.
+                            </p>
+                            @error('imagen')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                             @enderror
                         </div>

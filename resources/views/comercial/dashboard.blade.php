@@ -38,6 +38,15 @@
                     </div>
                 </a>
 
+                {{-- Tarjeta para ver el catálogo de productos --}}
+                <a href="{{ route('comercial.catalogo.index') }}"
+                    class="bg-white shadow-sm rounded-lg p-6 hover:shadow-md transition flex items-center gap-4">
+                    <div class="bg-yellow-100 text-yellow-600 rounded-full p-4 text-2xl">🛍️</div>
+                    <div>
+                        <h3 class="font-semibold text-gray-800 text-lg">Catálogo de productos</h3>
+                        <p class="text-gray-500 text-sm">Ver todos los productos disponibles</p>
+                    </div>
+                </a>
             </div>
         </div>
     </div>

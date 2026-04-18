@@ -17,6 +17,7 @@ class Producto extends Model
     protected $fillable = [
         'tipo',
         'precio_base',
+        'imagen'//Agregar imagen
     ];
 
     //Cast para que precio siempre sea un tipo float

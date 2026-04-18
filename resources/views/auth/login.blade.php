@@ -1,4 +1,7 @@
 <x-guest-layout>
+    <h1 class="text-2xl font-bold text-center mb-6">
+    MyEmpresa SL
+</h1>
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 

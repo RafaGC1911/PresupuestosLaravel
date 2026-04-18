@@ -1,5 +1,4 @@
 <x-app-layout>
-
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             Crear producto
@@ -11,10 +10,11 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
 
-                    {{-- action apunta al método store, method POST para enviar datos --}}
-                    <form action="{{ route('admin.productos.store') }}" method="POST">
+                    {{-- enctype="multipart/form-data" es obligatorio cuando el formulario sube archivos --}}
+                    {{-- Sin esto Laravel no recibe el archivo y $request->hasFile() siempre devuelve false --}}
+                    <form action="{{ route('admin.productos.store') }}" method="POST" 
+                        enctype="multipart/form-data">
 
-                        {{-- Laravel requiere esto en todos los formularios POST como medida de seguridad --}}
                         @csrf
 
                         {{-- Campo tipo --}}
@@ -23,9 +23,8 @@
                             {{-- old('tipo') recupera el valor si la validación falla, para no perder lo escrito --}}
                             <input type="text" name="tipo" value="{{ old('tipo') }}"
                                 class="w-full border border-gray-300 rounded px-4 py-2">
-                            {{-- Muestra el error de validación si lo hay --}}
                             @error('tipo')
-                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                             @enderror
                         </div>
 
@@ -35,7 +34,19 @@
                             <input type="number" step="0.01" name="precio_base" value="{{ old('precio_base') }}"
                                 class="w-full border border-gray-300 rounded px-4 py-2">
                             @error('precio_base')
-                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        {{-- Campo imagen --}}
+                        <div class="mb-4">
+                            <label class="block text-gray-600 font-semibold mb-1">Imagen</label>
+                            {{-- type="file" muestra el selector de archivos del sistema operativo --}}
+                            {{-- accept limita los tipos de archivo que se pueden seleccionar --}}
+                            <input type="file" name="imagen" accept="image/*"
+                                class="w-full border border-gray-300 rounded px-4 py-2">
+                            @error('imagen')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                             @enderror
                         </div>
 

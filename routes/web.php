@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\ProductoController as AdminProductoController;
 
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Comercial\PresupuestoController as ComercialPresupuestoController;
+use App\Http\Controllers\Comercial\CatalogoController as ComercialCatalogoController;
 
 //Aquí en web.php se definen las rutas, se definen qué URL ejecuta qué controlador
 
@@ -63,4 +64,16 @@ Route::middleware(['auth', 'verified', 'rol:comercial'])
 //Ruta para conectar la url con la función del presupuestoController para crear pdfs
 Route::get('presupuestos/{presupuesto}/pdf', [ComercialPresupuestoController::class, 'pdf'])
     ->name('comercial.presupuestos.pdf');
+
+
+
+Route::middleware(['auth', 'verified', 'rol:comercial'])
+    ->prefix('comercial')
+    ->name('comercial.')
+    ->group(function () {
+        Route::resource('presupuestos', ComercialPresupuestoController::class);
+        // Esta ruta solo necesita el método index porque el comercial solo puede ver el catálogo
+        Route::get('catalogo', [ComercialCatalogoController::class, 'index'])->name('catalogo.index');
+    });
+
 require __DIR__.'/auth.php';
