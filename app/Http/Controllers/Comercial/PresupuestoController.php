@@ -12,43 +12,43 @@ use Barryvdh\DomPDF\Facade\Pdf; //Importar la clase que permite usar la librerí
 
 class PresupuestoController extends Controller
 {
-   public function index(Request $request)
-{
-    // Empezamos construyendo la consulta base filtrando siempre por el comercial logueado.
-    // Auth::id() devuelve el ID del usuario de la sesión actual.
-    // Si no filtráramos por user_id, todos los comerciales verían los presupuestos de los demás.
-    // Usamos query() en lugar de get() directamente porque queremos añadir filtros opcionales después.
-    $query = Presupuesto::where('user_id', Auth::id())
-        // with(['cliente']) significa "cuando traigas los presupuestos,
-        // trae también los datos del cliente asociado a cada uno en la misma consulta".
-        // Sin esto, Laravel haría una consulta extra a la base de datos por cada presupuesto
-        // para obtener el nombre del cliente, lo cual es muy ineficiente.
-        ->with(['cliente']);
+    public function index(Request $request)
+    {
+        // Empezamos construyendo la consulta base filtrando siempre por el comercial logueado.
+        // Auth::id() devuelve el ID del usuario de la sesión actual.
+        // Si no filtráramos por user_id, todos los comerciales verían los presupuestos de los demás.
+        // Usamos query() en lugar de get() directamente porque queremos añadir filtros opcionales después.
+        $query = Presupuesto::where('user_id', Auth::id())
+            // with(['cliente']) significa "cuando traigas los presupuestos,
+            // trae también los datos del cliente asociado a cada uno en la misma consulta".
+            // Sin esto, Laravel haría una consulta extra a la base de datos por cada presupuesto
+            // para obtener el nombre del cliente, lo cual es muy ineficiente.
+            ->with(['cliente']);
 
-    // Comprobamos si el usuario ha escrito algo en el buscador de cliente.
-    // $request->filled() devuelve true si el campo existe y no está vacío.
-    if ($request->filled('cliente')) {
-        // whereHas filtra los presupuestos que tengan un cliente que cumpla la condición.
-        // Es decir, busca presupuestos cuyo cliente tenga ese nombre.
-        $query->whereHas('cliente', function($q) use ($request) {
-            // LIKE %texto% busca que el nombre contenga el texto en cualquier posición.
-            // Por ejemplo si buscas "gar" encontrará "García", "Garcilaso", etc.
-            $q->where('nombre', 'like', '%' . $request->cliente . '%');
-        });
+        // Comprobamos si el usuario ha escrito algo en el buscador de cliente.
+        // $request->filled() devuelve true si el campo existe y no está vacío.
+        if ($request->filled('cliente')) {
+            // whereHas filtra los presupuestos que tengan un cliente que cumpla la condición.
+            // Es decir, busca presupuestos cuyo cliente tenga ese nombre.
+            $query->whereHas('cliente', function ($q) use ($request) {
+                // LIKE %texto% busca que el nombre contenga el texto en cualquier posición.
+                // Por ejemplo si buscas "gar" encontrará "García", "Garcilaso", etc.
+                $q->where('nombre', 'like', '%' . $request->cliente . '%');
+            });
+        }
+
+        // Comprobamos si el usuario ha seleccionado un estado en el desplegable.
+        if ($request->filled('estado')) {
+            // Filtramos los presupuestos que tengan exactamente ese estado.
+            $query->where('estado', $request->estado);
+        }
+
+        // Ejecutamos la consulta con todos los filtros aplicados y obtenemos los resultados.
+        // Si no se ha aplicado ningún filtro, devuelve todos los presupuestos del comercial.
+        $presupuestos = $query->get();
+
+        return view('comercial.presupuestos.index', compact('presupuestos'));
     }
-
-    // Comprobamos si el usuario ha seleccionado un estado en el desplegable.
-    if ($request->filled('estado')) {
-        // Filtramos los presupuestos que tengan exactamente ese estado.
-        $query->where('estado', $request->estado);
-    }
-
-    // Ejecutamos la consulta con todos los filtros aplicados y obtenemos los resultados.
-    // Si no se ha aplicado ningún filtro, devuelve todos los presupuestos del comercial.
-    $presupuestos = $query->get();
-
-    return view('comercial.presupuestos.index', compact('presupuestos'));
-}
 
     public function create()
     {
@@ -144,6 +144,13 @@ class PresupuestoController extends Controller
 
     public function edit(Presupuesto $presupuesto)
     {
+
+        // Comprobamos que el presupuesto pertenece al comercial logueado
+        // Si no es suyo, lanzamos un error 403
+        if ($presupuesto->user_id !== Auth::id()) {
+            abort(403, 'Este presupuesto no es tuyo');
+        }
+
         // Necesitamos clientes y productos para los selectores del formulario,
         // igual que en create.
         $clientes = Cliente::all();
@@ -222,14 +229,14 @@ class PresupuestoController extends Controller
 
     //Método para generar un pdf de un presupuesto
     public function pdf(Presupuesto $presupuesto)
-{
-    // Cargar relaciones necesarias para tener todos los datos
-    $presupuesto->load(['cliente', 'lineasPresupuestos.producto']);
+    {
+        // Cargar relaciones necesarias para tener todos los datos
+        $presupuesto->load(['cliente', 'lineasPresupuestos.producto']);
 
-    // Coge una vista de blade y la convierte en pdf
-    $pdf = Pdf::loadView('comercial.presupuestos.pdf', compact('presupuesto'));
+        // Coge una vista de blade y la convierte en pdf
+        $pdf = Pdf::loadView('comercial.presupuestos.pdf', compact('presupuesto'));
 
-    // Esto fuerza la descarga del archivo
-    return $pdf->download('presupuesto_'.$presupuesto->id.'.pdf');
-}
+        // Esto fuerza la descarga del archivo
+        return $pdf->download('presupuesto_' . $presupuesto->id . '.pdf');
+    }
 }
