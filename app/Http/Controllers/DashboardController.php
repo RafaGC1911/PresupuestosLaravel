@@ -14,28 +14,17 @@ class DashboardController extends Controller
 
 
 
-
-
-
-
-
-
-
-
-
-
-
     public function index(Request $request): View|RedirectResponse
     {
         $user = $request->user();
 
         if ($user->isAdmin()) {
 
-            return view('admin.dashboard'); //TODO Cambiar por llamada al controlador
+            return view('admin.dashboard');
         }
 
         if ($user->isComercial()) {
-            return view('comercial.dashboard'); //TODO Cambiar por llamada al controlador
+            return view('comercial.dashboard');
 
         }
 

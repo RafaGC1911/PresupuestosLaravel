@@ -34,6 +34,11 @@ class Producto extends Model
     /**
      * Relación con líneas_presupuesto
      * Un producto puede aparecer en muchas líneas de presupuesto
+     * 
+     * Le dice a Laravel:
+     *  Busca todas las líneas_presupuesto cuyo producto_id coincida con este producto.
+     * 
+     * 
      */
     public function lineasPresupuestos():HasMany
     {

@@ -32,7 +32,7 @@ class PresupuestoController extends Controller
         // Es decir, busca presupuestos cuyo cliente tenga ese nombre.
         $query->whereHas('cliente', function($q) use ($request) {
             // LIKE %texto% busca que el nombre contenga el texto en cualquier posición.
-            // Por ejemplo si buscas "gar" encontrará "García", "Garriga", etc.
+            // Por ejemplo si buscas "gar" encontrará "García", "Garcilaso", etc.
             $q->where('nombre', 'like', '%' . $request->cliente . '%');
         });
     }
